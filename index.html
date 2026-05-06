@@ -1,409 +1,633 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cologne Picker</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400&display=swap');
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+- { margin: 0; padding: 0; box-sizing: border-box; }
 
-  :root {
-    --bg: #0e0e0f;
-    --surface: #161618;
-    --border: #2a2a2e;
-    --gold: #c9a96e;
-    --muted: #6b6760;
-    --text: #e8e4dc;
-  }
+:root {
+–bg: #0a0a0b;
+–surface: #111113;
+–surface2: #18181b;
+–border: #222226;
+–border2: #2e2e34;
+–gold: #c8a96a;
+–gold2: #e8c98a;
+–muted: #5a5860;
+–muted2: #7a7880;
+–text: #e2ddd6;
+–text2: #a8a49e;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 20px 60px;
-  }
+body {
+background: var(–bg);
+color: var(–text);
+font-family: ‘DM Mono’, monospace;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 48px 20px 80px;
+position: relative;
+}
 
-  header {
-    text-align: center;
-    margin-bottom: 48px;
-  }
+body::before {
+content: ‘’;
+position: fixed;
+top: 0; left: 0; right: 0; bottom: 0;
+background: radial-gradient(ellipse at 20% 20%, rgba(200,169,106,0.04) 0%, transparent 60%),
+radial-gradient(ellipse at 80% 80%, rgba(100,120,160,0.03) 0%, transparent 60%);
+pointer-events: none;
+}
 
-  header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.8rem, 5vw, 2.6rem);
-    font-weight: 400;
-    letter-spacing: 0.05em;
-    color: var(--gold);
-    margin-bottom: 8px;
-  }
+header {
+text-align: center;
+margin-bottom: 52px;
+position: relative;
+}
 
-  header p {
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-  }
+.header-eyebrow {
+font-size: 0.58rem;
+letter-spacing: 0.35em;
+text-transform: uppercase;
+color: var(–gold);
+margin-bottom: 12px;
+opacity: 0.8;
+}
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 32px;
-    width: 100%;
-    max-width: 500px;
-    position: relative;
-    animation: fadeIn 0.25s ease;
-  }
+header h1 {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: clamp(2.2rem, 7vw, 3.2rem);
+font-weight: 300;
+letter-spacing: 0.08em;
+color: var(–text);
+line-height: 1;
+margin-bottom: 10px;
+}
 
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  }
+header h1 span {
+color: var(–gold);
+}
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+.header-sub {
+font-size: 0.6rem;
+color: var(–muted);
+letter-spacing: 0.2em;
+text-transform: uppercase;
+}
 
-  .step-label {
-    font-size: 0.6rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 14px;
-  }
+/* Progress bar */
+.progress-bar {
+width: 100%;
+max-width: 480px;
+height: 1px;
+background: var(–border);
+margin-bottom: 36px;
+position: relative;
+overflow: hidden;
+}
 
-  .question {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.15rem;
-    font-weight: 400;
-    line-height: 1.5;
-    margin-bottom: 28px;
-  }
+.progress-fill {
+height: 100%;
+background: linear-gradient(90deg, var(–gold), var(–gold2));
+transition: width 0.4s ease;
+}
 
-  .options {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-  }
+.card {
+background: var(–surface);
+border: 1px solid var(–border);
+width: 100%;
+max-width: 480px;
+position: relative;
+animation: slideUp 0.3s ease;
+}
 
-  .opt {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem;
-    letter-spacing: 0.03em;
-    padding: 13px 16px;
-    text-align: left;
-    cursor: pointer;
-    border-radius: 1px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: border-color 0.12s, color 0.12s, background 0.12s;
-  }
+.card-inner {
+padding: 32px 28px 28px;
+}
 
-  .opt .arrow { color: var(--muted); transition: color 0.12s; flex-shrink: 0; }
+.card::after {
+content: ‘’;
+position: absolute;
+bottom: 0; left: 0; right: 0;
+height: 1px;
+background: linear-gradient(90deg, transparent, var(–border2), transparent);
+}
 
-  .opt:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-    background: rgba(201,169,110,0.04);
-  }
-  .opt:hover .arrow { color: var(--gold); }
+@keyframes slideUp {
+from { opacity: 0; transform: translateY(10px); }
+to   { opacity: 1; transform: translateY(0); }
+}
 
-  .back-btn {
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    cursor: pointer;
-    margin-bottom: 22px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: color 0.12s;
-  }
-  .back-btn:hover { color: var(--text); }
-  .back-btn.hidden { visibility: hidden; }
+.step-meta {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 20px;
+}
 
-  .result-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 36px 32px;
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
-    position: relative;
-    animation: fadeIn 0.3s ease;
-  }
+.step-category {
+font-size: 0.58rem;
+letter-spacing: 0.25em;
+text-transform: uppercase;
+color: var(–gold);
+opacity: 0.7;
+}
 
-  .result-accent {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    border-radius: 2px 2px 0 0;
-  }
+.step-count {
+font-size: 0.58rem;
+color: var(–muted);
+letter-spacing: 0.1em;
+}
 
-  .result-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.1rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-    letter-spacing: 0.02em;
-  }
+.question {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.4rem;
+font-weight: 400;
+line-height: 1.4;
+color: var(–text);
+margin-bottom: 28px;
+letter-spacing: 0.02em;
+}
 
-  .result-house {
-    font-size: 0.62rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 26px;
-  }
+.options {
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
 
-  .divider {
-    width: 36px;
-    height: 1px;
-    margin: 0 auto 24px;
-    opacity: 0.4;
-  }
+.opt {
+background: transparent;
+border: 1px solid var(–border);
+color: var(–text2);
+font-family: ‘DM Mono’, monospace;
+font-size: 0.72rem;
+letter-spacing: 0.03em;
+padding: 12px 14px;
+text-align: left;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 10px;
+transition: all 0.15s ease;
+line-height: 1.4;
+}
 
-  .result-reason {
-    font-size: 0.8rem;
-    color: #b0aa9e;
-    line-height: 1.75;
-    margin-bottom: 24px;
-    text-align: left;
-  }
+.opt-arrow {
+color: var(–border2);
+flex-shrink: 0;
+font-size: 0.65rem;
+transition: all 0.15s;
+}
 
-  .result-note {
-    font-size: 0.7rem;
-    color: var(--muted);
-    border-top: 1px solid var(--border);
-    padding-top: 18px;
-    line-height: 1.65;
-    text-align: left;
-  }
+.opt:hover {
+border-color: var(–gold);
+color: var(–text);
+background: rgba(200,169,106,0.03);
+}
+.opt:hover .opt-arrow { color: var(–gold); transform: translateX(2px); }
 
-  .restart-btn {
-    margin-top: 22px;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 10px 24px;
-    cursor: pointer;
-    border-radius: 1px;
-    transition: border-color 0.12s, color 0.12s;
-  }
-  .restart-btn:hover { border-color: var(--gold); color: var(--gold); }
+.back-row {
+padding: 14px 28px;
+border-top: 1px solid var(–border);
+}
+
+.back-btn {
+background: none;
+border: none;
+color: var(–muted);
+font-family: ‘DM Mono’, monospace;
+font-size: 0.6rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+cursor: pointer;
+padding: 0;
+display: flex;
+align-items: center;
+gap: 6px;
+transition: color 0.12s;
+}
+.back-btn:hover { color: var(–text2); }
+.back-btn.hidden { visibility: hidden; }
+
+/* Result */
+.result-card {
+background: var(–surface);
+border: 1px solid var(–border);
+width: 100%;
+max-width: 480px;
+position: relative;
+animation: slideUp 0.35s ease;
+overflow: hidden;
+}
+
+.result-top-bar {
+height: 3px;
+width: 100%;
+}
+
+.result-header {
+padding: 32px 28px 24px;
+border-bottom: 1px solid var(–border);
+}
+
+.result-label {
+font-size: 0.58rem;
+letter-spacing: 0.3em;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 10px;
+}
+
+.result-name {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 2.6rem;
+font-weight: 300;
+letter-spacing: 0.04em;
+line-height: 1;
+margin-bottom: 6px;
+}
+
+.result-house {
+font-size: 0.6rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(–muted2);
+}
+
+.result-body {
+padding: 24px 28px;
+border-bottom: 1px solid var(–border);
+}
+
+.result-reason {
+font-size: 0.78rem;
+color: var(–text2);
+line-height: 1.8;
+margin-bottom: 0;
+}
+
+.result-note-section {
+padding: 20px 28px;
+background: var(–surface2);
+}
+
+.result-note-label {
+font-size: 0.55rem;
+letter-spacing: 0.25em;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 8px;
+}
+
+.result-note {
+font-size: 0.72rem;
+color: var(–muted2);
+line-height: 1.7;
+}
+
+.result-footer {
+padding: 16px 28px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.restart-btn {
+background: transparent;
+border: 1px solid var(–border);
+color: var(–muted);
+font-family: ‘DM Mono’, monospace;
+font-size: 0.6rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+padding: 9px 18px;
+cursor: pointer;
+transition: all 0.12s;
+}
+.restart-btn:hover { border-color: var(–gold); color: var(–gold); }
+
+.result-conditions {
+font-size: 0.6rem;
+color: var(–muted);
+letter-spacing: 0.05em;
+text-align: right;
+line-height: 1.5;
+}
 </style>
+
 </head>
 <body>
 
 <header>
-  <h1>What Should I Wear?</h1>
-  <p>Cologne decision tree · Royersford</p>
+  <div class="header-eyebrow">Creed Collection</div>
+  <h1>What Should I <span>Wear?</span></h1>
+  <div class="header-sub">Royersford · Daily Picker</div>
 </header>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progressFill" style="width:0%"></div>
+</div>
 
 <div id="app"></div>
 
 <script>
 const COLORS = {
-  aventus: '#c9a96e',
+  aventus: '#c8a96a',
   git:     '#7aab6e',
   mi:      '#6eabc9',
   erolfa:  '#9b8fcf',
   tv:      '#c97a6e',
   ob:      '#c9956e',
+  ro:      '#b87fa0',
 };
 
 const SCENTS = {
   aventus: {
     name: 'Aventus',
     house: 'Creed · 2010',
-    key: 'aventus',
-    reason: 'Warm and sunny with heat building through the day — Aventus needs that energy to fully open and project. This is exactly its moment. Wear it when you are going to be out and want presence.',
-    note: '→ Spray chest + back of neck. 2–3 sprays max. Unscented lotion beforehand helps longevity.'
+    reason: 'Warm and sunny with real heat to build through the day. Aventus needs that energy to fully open — this is its best conditions. You want presence and projection, and today earns it.',
+    note: 'Chest + back of neck. 2–3 sprays. Unscented lotion first for longevity. Skip reapply unless it is a very long day.'
   },
   git: {
     name: 'Green Irish Tweed',
     house: 'Creed · 1985',
-    key: 'git',
-    reason: 'Mild and sunny with fresh air — GIT is soft and intimate, best enjoyed outdoors with movement. You are not projecting to a room, you are wearing it for yourself. Perfect for a dog walk on a nice day.',
-    note: '→ Spray before heading out. 2 sprays. Works best with fresh air, not indoors.'
+    reason: 'Mild, sunny, and you are moving outside. GIT is soft and intimate — it rewards body heat from movement and fresh air. You are wearing it for yourself, not the room.',
+    note: 'Spray right before heading out. 2 sprays. Does not work well indoors or in cold still air.'
   },
   mi: {
     name: 'Milésime Impérial',
     house: 'Creed · 1995',
-    key: 'mi',
-    reason: 'Hot and humid where Aventus might feel loud — MI is linear, salty, and consistent. It does not rely on sustained heat to project and feels effortless when you are actually warm.',
-    note: '→ Best at 82°+ with real humidity. 2–3 sprays. Also works indoors when heat is the story.'
+    reason: 'Hot and humid where Aventus would feel loud or heavy. MI is linear, salty, and effortless — it does not need sustained heat to project and fits naturally when you are actually warm.',
+    note: 'Best at 82°+ with real humidity. 2–3 sprays. Also works indoors when heat is the dominant condition.'
   },
   erolfa: {
     name: 'Erolfa',
     house: 'Creed · 1992',
-    key: 'erolfa',
-    reason: 'Indoor, casual, climate-controlled. Erolfa is quiet and aquatic — pleasant without demanding attention. It fits close-quarters situations where you do not want to overpower the room.',
-    note: '→ 2 sprays, chest or wrist. Ideal for family hangouts, indoor meals, low-key days at home.'
+    reason: 'Indoor, climate-controlled, close quarters. Erolfa is quiet and aquatic — it fits situations where you do not want to project, just smell good to the people right next to you.',
+    note: '2 sprays, chest or wrist. Best for family settings, indoor meals, or any low-key day at home.'
   },
   tv: {
     name: 'Tobacco Vanille',
     house: 'Tom Ford · 2007',
-    key: 'tv',
-    reason: 'Cold weather and an occasion worth dressing up for. TV is rich, enveloping, and crowd-pleasing — a statement scent that earns the moment when temps are low and the setting calls for it.',
-    note: '→ 2 sprays max, it projects hard. Best below 58°. Evening, concerts, going out in the cold.'
+    reason: 'Cold conditions and an occasion worth stepping up for. TV is rich, enveloping, and projects hard — it earns the moment when the weather is cold and the setting calls for something substantial.',
+    note: '2 sprays max. Best below 58°. Evening, concerts, going out in the cold. Nose blindness is real with this one — do not reapply.'
   },
   ob: {
     name: 'Oud & Bergamot',
     house: 'Jo Malone · 2014',
-    key: 'ob',
-    reason: 'Cool weather but you want warmth without going full Tobacco Vanille. Oud Bergamot is distinctive and interesting — a bit more edge, slightly lighter. Good for casual cold days or daytime when TV feels like too much.',
-    note: '→ 2 sprays. Works in the 45–62° range. Better for daytime than TV, which skews evening.'
+    reason: 'Cool or cold conditions but the setting is casual or the occasion does not warrant TV. OB is warm and distinctive without being as heavy. Good for daytime cold or when TV feels like too much.',
+    note: '2 sprays. Best in the 45–62° range. Longevity is shorter than the Creeds — about 4 hours. Reapply if needed mid-day.'
+  },
+  ro: {
+    name: 'Royal Oud',
+    house: 'Creed · 2011',
+    reason: 'Cold weather and you want a Creed-caliber statement. Royal Oud has the weight and projection for winter without leaving the house — rich, woody, and distinctive. This is the winter flagship.',
+    note: '2 sprays. Best below 60°. Works for both casual cold days and going out. Strong longevity — no reapply needed.'
   },
 };
 
+// Each node: { label, category, q, opts: [{text, next}], depth }
 const TREE = {
+
   q1: {
-    label: 'Temperature',
-    q: "What is the temp today?",
+    category: 'Temperature',
+    q: 'What does it actually feel like outside right now?',
+    depth: 1,
     opts: [
-      { text: 'Below 55° — cold',        next: 'q_cold' },
-      { text: '55–65° — cool / mild',    next: 'q_mild' },
-      { text: '65–80° — warm',           next: 'q_warm' },
-      { text: '80°+ — hot',              next: 'q_hot' },
+      { text: 'Below 50° — raw, cold',           next: 'q_cold' },
+      { text: '50–60° — cool, feels like fall',  next: 'q_cool' },
+      { text: '60–72° — mild, comfortable',      next: 'q_mild' },
+      { text: '72–82° — warm',                   next: 'q_warm' },
+      { text: '82°+ — hot',                      next: 'q_hot' },
     ]
   },
 
+  // ── COLD (<50°) ──────────────────────────────────────────
   q_cold: {
-    label: 'Setting',
-    q: "What is the plan today?",
+    category: 'Conditions',
+    q: 'Is it wet, windy, or dry out?',
+    depth: 2,
     opts: [
-      { text: 'Going out — event, dinner, concert',  next: 'result:tv' },
-      { text: 'Casual outing, errands, social',      next: 'result:ob' },
-      { text: 'Mostly home + dog walk',              next: 'result:ob' },
+      { text: 'Wet — rain, damp, post-rain',  next: 'q_cold_wet' },
+      { text: 'Windy but dry',                next: 'q_cold_wind' },
+      { text: 'Dry and still',                next: 'q_cold_dry' },
+    ]
+  },
+  q_cold_wet: {
+    category: 'Setting',
+    q: 'Where are you spending most of your time?',
+    depth: 3,
+    opts: [
+      { text: 'Going out — event, dinner, bar',   next: 'result:tv' },
+      { text: 'Casual outing or errand',           next: 'result:ob' },
+      { text: 'Mostly home',                       next: 'result:ro' },
+    ]
+  },
+  q_cold_wind: {
+    category: 'Setting',
+    q: 'What is the plan?',
+    depth: 3,
+    opts: [
+      { text: 'Going out — occasion worth it',    next: 'result:tv' },
+      { text: 'Casual, outdoors some of the time',next: 'result:ro' },
+      { text: 'Mostly indoors',                   next: 'result:ro' },
+    ]
+  },
+  q_cold_dry: {
+    category: 'Setting',
+    q: 'What is the plan today?',
+    depth: 3,
+    opts: [
+      { text: 'Going out — evening, event, dinner', next: 'result:tv' },
+      { text: 'Casual social, errands',             next: 'result:ro' },
+      { text: 'Home + dog walk only',               next: 'result:ob' },
     ]
   },
 
-  q_mild: {
-    label: 'Conditions',
-    q: "What are the conditions like?",
+  // ── COOL (50–60°) ─────────────────────────────────────────
+  q_cool: {
+    category: 'Conditions',
+    q: 'What are the sky and wind conditions?',
+    depth: 2,
     opts: [
-      { text: 'Sunny',             next: 'q_mild_sun' },
-      { text: 'Cloudy / overcast', next: 'q_mild_cloud' },
-      { text: 'Mostly indoors',    next: 'result:erolfa' },
+      { text: 'Overcast, damp, or windy',          next: 'q_cool_grey' },
+      { text: 'Partly cloudy, some breaks of sun', next: 'q_cool_mixed' },
+      { text: 'Sunny and calm',                    next: 'q_cool_sun' },
+    ]
+  },
+  q_cool_grey: {
+    category: 'Setting',
+    q: 'What is the vibe today?',
+    depth: 3,
+    opts: [
+      { text: 'Going out — occasion that matters', next: 'result:tv' },
+      { text: 'Casual out — game, bar, social',    next: 'result:ob' },
+      { text: 'Low key, mostly home',              next: 'result:ro' },
+    ]
+  },
+  q_cool_mixed: {
+    category: 'Setting',
+    q: 'Indoor or outdoor focus?',
+    depth: 3,
+    opts: [
+      { text: 'Mostly outside, active',            next: 'result:aventus' },
+      { text: 'Mix — some outside, some in',       next: 'result:ob' },
+      { text: 'Mostly indoors',                    next: 'result:erolfa' },
+    ]
+  },
+  q_cool_sun: {
+    category: 'Setting',
+    q: 'How much time are you actually outside?',
+    depth: 3,
+    opts: [
+      { text: 'Most of the day, out with people',  next: 'result:aventus' },
+      { text: 'Dog walk then home',                next: 'result:git' },
+      { text: 'Mostly indoors',                    next: 'result:erolfa' },
+    ]
+  },
+
+  // ── MILD (60–72°) ─────────────────────────────────────────
+  q_mild: {
+    category: 'Sky',
+    q: 'What does the sky look like?',
+    depth: 2,
+    opts: [
+      { text: 'Full sun all day',         next: 'q_mild_sun' },
+      { text: 'Partly cloudy / mixed',    next: 'q_mild_mixed' },
+      { text: 'Overcast or grey',         next: 'q_mild_grey' },
     ]
   },
   q_mild_sun: {
-    label: 'Time outside',
-    q: "How much time are you actually outside?",
+    category: 'Setting',
+    q: 'What is the plan?',
+    depth: 3,
     opts: [
-      { text: 'Most of the day — out with people',   next: 'result:aventus' },
-      { text: 'Just a dog walk, then home',          next: 'result:git' },
+      { text: 'Out most of the day — social, going somewhere', next: 'result:aventus' },
+      { text: 'Dog walk + home',                               next: 'result:git' },
+      { text: 'Staying in',                                    next: 'result:git' },
     ]
   },
-  q_mild_cloud: {
-    label: 'Vibe',
-    q: "Who are you wearing this for?",
+  q_mild_mixed: {
+    category: 'Setting',
+    q: 'Where are you spending the day?',
+    depth: 3,
     opts: [
-      { text: 'Out with people — want some presence',  next: 'result:aventus' },
-      { text: 'Mostly for myself, low key',            next: 'result:git' },
-      { text: 'Indoors, close quarters',               next: 'result:erolfa' },
+      { text: 'Mostly outside — active, moving around', next: 'result:aventus' },
+      { text: 'Mix of in and out',                      next: 'result:aventus' },
+      { text: 'Indoors with AC or climate control',     next: 'result:erolfa' },
+      { text: 'Dog walk then home',                     next: 'result:git' },
+    ]
+  },
+  q_mild_grey: {
+    category: 'Mood',
+    q: 'Energy level today?',
+    depth: 3,
+    opts: [
+      { text: 'Going out, social — want presence',    next: 'result:aventus' },
+      { text: 'Low key, just for myself',             next: 'result:git' },
+      { text: 'Indoors, close quarters',              next: 'result:erolfa' },
     ]
   },
 
+  // ── WARM (72–82°) ─────────────────────────────────────────
   q_warm: {
-    label: 'Sky',
-    q: "Sun or clouds?",
+    category: 'Humidity',
+    q: 'How humid does it feel?',
+    depth: 2,
     opts: [
-      { text: 'Sunny all day',          next: 'q_warm_sun' },
-      { text: 'Partly cloudy / mixed',  next: 'q_warm_mixed' },
-      { text: 'Mostly overcast',        next: 'q_warm_cloud' },
+      { text: 'Humid — sticky, muggy',       next: 'q_warm_humid' },
+      { text: 'Comfortable, not too humid',  next: 'q_warm_dry' },
     ]
   },
-  q_warm_sun: {
-    label: 'Setting',
-    q: "Where are you headed?",
+  q_warm_humid: {
+    category: 'Setting',
+    q: 'Indoor or outdoor?',
+    depth: 3,
     opts: [
-      { text: 'Out — social, people, leaving the house',  next: 'result:aventus' },
-      { text: 'Dog walk then home',                       next: 'result:git' },
-      { text: 'Staying in all day',                       next: 'result:git' },
+      { text: 'Mostly outside',         next: 'result:mi' },
+      { text: 'Mix of both',            next: 'result:mi' },
+      { text: 'Indoors with AC',        next: 'result:erolfa' },
     ]
   },
-  q_warm_mixed: {
-    label: 'Setting',
-    q: "Indoor or outdoor focus?",
+  q_warm_dry: {
+    category: 'Sky + Setting',
+    q: 'Sun and where are you headed?',
+    depth: 3,
     opts: [
-      { text: 'Mostly outside or active',  next: 'result:aventus' },
-      { text: 'Indoor with AC',            next: 'result:erolfa' },
-      { text: 'Dog walk + home',           next: 'result:git' },
-    ]
-  },
-  q_warm_cloud: {
-    label: 'Setting',
-    q: "What is the vibe?",
-    opts: [
-      { text: 'Out with people',    next: 'result:aventus' },
-      { text: 'Indoor or casual',   next: 'result:erolfa' },
+      { text: 'Sunny, going out or active',   next: 'result:aventus' },
+      { text: 'Sunny, dog walk then home',    next: 'result:git' },
+      { text: 'Cloudy or indoors',            next: 'result:erolfa' },
     ]
   },
 
+  // ── HOT (82°+) ────────────────────────────────────────────
   q_hot: {
-    label: 'Humidity',
-    q: "Humid or dry heat?",
+    category: 'Humidity',
+    q: 'Humid or dry heat?',
+    depth: 2,
     opts: [
-      { text: 'Humid — sticky, sweaty',  next: 'result:mi' },
-      { text: 'Dry heat',                next: 'q_hot_dry' },
+      { text: 'Humid — actually sweating',   next: 'result:mi' },
+      { text: 'Dry heat',                    next: 'q_hot_dry' },
     ]
   },
   q_hot_dry: {
-    label: 'Setting',
-    q: "Indoor or outdoor?",
+    category: 'Setting',
+    q: 'Mostly indoor or outdoor?',
+    depth: 3,
     opts: [
-      { text: 'Mostly outside',    next: 'result:aventus' },
-      { text: 'Indoor with AC',    next: 'result:erolfa' },
-      { text: 'Mix of both',       next: 'result:mi' },
+      { text: 'Outside most of the time',  next: 'result:aventus' },
+      { text: 'Indoors with AC',           next: 'result:erolfa' },
+      { text: 'Mix of both',               next: 'result:mi' },
     ]
   },
 };
 
+const MAX_DEPTH = 3;
 let history = [];
 let currentNode = 'q1';
+let answers = [];
+
+function getProgress() {
+  if (currentNode.startsWith('result:')) return 100;
+  const node = TREE[currentNode];
+  return Math.round(((node.depth - 1) / MAX_DEPTH) * 85);
+}
 
 function render() {
   const app = document.getElementById('app');
+  document.getElementById('progressFill').style.width = getProgress() + '%';
 
   if (currentNode.startsWith('result:')) {
+    document.getElementById('progressFill').style.width = '100%';
     const key = currentNode.replace('result:', '');
     const s = SCENTS[key];
     const color = COLORS[key];
+
     app.innerHTML =
       '<div class="result-card">' +
-        '<div class="result-accent" style="background:' + color + '"></div>' +
-        '<div class="result-name" style="color:' + color + '">' + s.name + '</div>' +
-        '<div class="result-house">' + s.house + '</div>' +
-        '<div class="divider" style="background:' + color + '"></div>' +
-        '<div class="result-reason">' + s.reason + '</div>' +
-        '<div class="result-note">' + s.note + '</div>' +
-        '<button class="restart-btn" onclick="restart()">← Start over</button>' +
+        '<div class="result-top-bar" style="background:' + color + '"></div>' +
+        '<div class="result-header">' +
+          '<div class="result-label">Today\'s recommendation</div>' +
+          '<div class="result-name" style="color:' + color + '">' + s.name + '</div>' +
+          '<div class="result-house">' + s.house + '</div>' +
+        '</div>' +
+        '<div class="result-body">' +
+          '<div class="result-reason">' + s.reason + '</div>' +
+        '</div>' +
+        '<div class="result-note-section">' +
+          '<div class="result-note-label">Application</div>' +
+          '<div class="result-note">' + s.note + '</div>' +
+        '</div>' +
+        '<div class="result-footer">' +
+          '<button class="restart-btn" onclick="restart()">← Start over</button>' +
+          '<div class="result-conditions">' + answers.slice(-2).join('<br>') + '</div>' +
+        '</div>' +
       '</div>';
     return;
   }
@@ -413,21 +637,31 @@ function render() {
 
   let optsHtml = '';
   node.opts.forEach(function(o, i) {
-    optsHtml += '<button class="opt" onclick="choose(' + i + ')"><span class="arrow">→</span>' + o.text + '</button>';
+    optsHtml += '<button class="opt" onclick="choose(' + i + ')">' +
+      '<span class="opt-arrow">›</span>' + o.text +
+      '</button>';
   });
 
   app.innerHTML =
     '<div class="card">' +
-      '<button class="back-btn ' + (isFirst ? 'hidden' : '') + '" onclick="goBack()">← Back</button>' +
-      '<div class="step-label">' + node.label + '</div>' +
-      '<div class="question">' + node.q + '</div>' +
-      '<div class="options">' + optsHtml + '</div>' +
+      '<div class="card-inner">' +
+        '<div class="step-meta">' +
+          '<span class="step-category">' + node.category + '</span>' +
+          '<span class="step-count">Step ' + node.depth + ' of ' + MAX_DEPTH + '</span>' +
+        '</div>' +
+        '<div class="question">' + node.q + '</div>' +
+        '<div class="options">' + optsHtml + '</div>' +
+      '</div>' +
+      '<div class="back-row">' +
+        '<button class="back-btn ' + (isFirst ? 'hidden' : '') + '" onclick="goBack()">← Back</button>' +
+      '</div>' +
     '</div>';
 }
 
 function choose(i) {
   var node = TREE[currentNode];
   history.push(currentNode);
+  answers.push(node.opts[i].text);
   currentNode = node.opts[i].next;
   render();
 }
@@ -435,16 +669,19 @@ function choose(i) {
 function goBack() {
   if (history.length === 0) return;
   currentNode = history.pop();
+  answers.pop();
   render();
 }
 
 function restart() {
   history = [];
+  answers = [];
   currentNode = 'q1';
   render();
 }
 
 render();
 </script>
+
 </body>
 </html>
